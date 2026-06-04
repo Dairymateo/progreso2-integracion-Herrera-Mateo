@@ -39,10 +39,11 @@ public class CitaRequest {
     @JsonProperty("valor")
     private BigDecimal valor;
 
-    public CitaRequest() {}
+    public CitaRequest() {
+    }
 
     public CitaRequest(String idCita, String paciente, String correo, String especialidad,
-                       LocalDate fechaCita, String sede, BigDecimal valor) {
+            LocalDate fechaCita, String sede, BigDecimal valor) {
         this.idCita = idCita;
         this.paciente = paciente;
         this.correo = correo;
@@ -52,31 +53,66 @@ public class CitaRequest {
         this.valor = valor;
     }
 
-    public String getIdCita() { return idCita; }
-    public void setIdCita(String idCita) { this.idCita = idCita; }
+    public String getIdCita() {
+        return idCita;
+    }
 
-    public String getPaciente() { return paciente; }
-    public void setPaciente(String paciente) { this.paciente = paciente; }
+    public void setIdCita(String idCita) {
+        this.idCita = idCita;
+    }
 
-    public String getCorreo() { return correo; }
-    public void setCorreo(String correo) { this.correo = correo; }
+    public String getPaciente() {
+        return paciente;
+    }
 
-    public String getEspecialidad() { return especialidad; }
-    public void setEspecialidad(String especialidad) { this.especialidad = especialidad; }
+    public void setPaciente(String paciente) {
+        this.paciente = paciente;
+    }
 
-    public LocalDate getFechaCita() { return fechaCita; }
-    public void setFechaCita(LocalDate fechaCita) { this.fechaCita = fechaCita; }
+    public String getCorreo() {
+        return correo;
+    }
 
-    public String getSede() { return sede; }
-    public void setSede(String sede) { this.sede = sede; }
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
 
-    public BigDecimal getValor() { return valor; }
-    public void setValor(BigDecimal valor) { this.valor = valor; }
+    public String getEspecialidad() {
+        return especialidad;
+    }
+
+    public void setEspecialidad(String especialidad) {
+        this.especialidad = especialidad;
+    }
+
+    public LocalDate getFechaCita() {
+        return fechaCita;
+    }
+
+    public void setFechaCita(LocalDate fechaCita) {
+        this.fechaCita = fechaCita;
+    }
+
+    public String getSede() {
+        return sede;
+    }
+
+    public void setSede(String sede) {
+        this.sede = sede;
+    }
+
+    public BigDecimal getValor() {
+        return valor;
+    }
+
+    public void setValor(BigDecimal valor) {
+        this.valor = valor;
+    }
 
     @Override
     public String toString() {
         return "CitaRequest{idCita='" + idCita + "', paciente='" + paciente +
-               "', correo='" + correo + "', especialidad='" + especialidad +
-               "', fechaCita=" + fechaCita + ", sede='" + sede + "', valor=" + valor + "}";
+                "', correo='" + correo + "', especialidad='" + especialidad +
+                "', fechaCita=" + fechaCita + ", sede='" + sede + "', valor=" + valor + "}";
     }
 }

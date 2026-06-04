@@ -1,5 +1,4 @@
 package edu.udla.integracion.progreso2.controller;
-
 import edu.udla.integracion.progreso2.exception.CitaValidationException;
 import edu.udla.integracion.progreso2.model.CitaRequest;
 import io.swagger.v3.oas.annotations.Operation;
