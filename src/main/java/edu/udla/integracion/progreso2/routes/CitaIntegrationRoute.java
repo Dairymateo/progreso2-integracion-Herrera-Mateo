@@ -30,8 +30,8 @@ public class CitaIntegrationRoute extends RouteBuilder {
     @Value("${app.routes.errors:data/errors}")
     private String errorsDir;
 
-    private static final String QUEUE_BILLING   = "spring-rabbitmq:billing.queue?autoDeclare=true";
-    private static final String EXCHANGE_EVENTS = "spring-rabbitmq:appointments.events?autoDeclare=true&exchangeType=fanout";
+    private static final String EXCHANGE_BILLING = "spring-rabbitmq:billing.exchange?routingKey=billing.routing.key";
+    private static final String EXCHANGE_EVENTS  = "spring-rabbitmq:appointments.events?exchangeType=fanout";
 
     public CitaIntegrationRoute(CitaValidationService citaValidationService, ObjectMapper objectMapper) {
         this.citaValidationService = citaValidationService;
@@ -97,8 +97,8 @@ public class CitaIntegrationRoute extends RouteBuilder {
                     billing.put("valor", cita.getValor());
                     exchange.getMessage().setBody(objectMapper.writeValueAsString(billing));
                 })
-                .to(QUEUE_BILLING)
-                .log("💳 Mensaje enviado a billing.queue");
+                .to(EXCHANGE_BILLING)
+                .log("💳 Mensaje enviado a billing.exchange (cola: billing.queue)");
 
         from("direct:cita-pub-sub")
                 .routeId("ruta-pub-sub")

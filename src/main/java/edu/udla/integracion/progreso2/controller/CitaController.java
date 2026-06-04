@@ -26,11 +26,9 @@ public class CitaController {
 
     private static final Logger log = LoggerFactory.getLogger(CitaController.class);
 
-    private final CitaValidationService citaValidationService;
     private final ProducerTemplate producerTemplate;
 
-    public CitaController(CitaValidationService citaValidationService, ProducerTemplate producerTemplate) {
-        this.citaValidationService = citaValidationService;
+    public CitaController(ProducerTemplate producerTemplate) {
         this.producerTemplate = producerTemplate;
     }
 
@@ -90,9 +88,7 @@ public class CitaController {
     @PostMapping
     public ResponseEntity<?> crearCita(@RequestBody CitaRequest cita) {
         try {
-            citaValidationService.validar(cita);
-
-            log.info("[CitaController] Cita válida, enviando a Camel: id={}", cita.getIdCita());
+            log.info("[CitaController] Recibiendo cita y enviando a Camel: id={}", cita.getIdCita());
             producerTemplate.sendBody("direct:procesarCita", cita);
 
             return ResponseEntity.status(HttpStatus.ACCEPTED)
@@ -100,10 +96,17 @@ public class CitaController {
                             "mensaje", "Cita recibida y en proceso",
                             "idCita", cita.getIdCita()
                     ));
-        } catch (CitaValidationException e) {
-            log.warn("[CitaController] Validación fallida: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", e.getMessage()));
+        } catch (org.apache.camel.CamelExecutionException e) {
+            // CamelExecutionException wraps the actual exception thrown in the route
+            Throwable cause = e.getCause();
+            if (cause instanceof CitaValidationException) {
+                log.warn("[CitaController] Validación fallida en Camel: {}", cause.getMessage());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", cause.getMessage()));
+            }
+            log.error("[CitaController] Error en el procesamiento Camel: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error interno en el procesamiento de la cita"));
         } catch (Exception e) {
             log.error("[CitaController] Error inesperado: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

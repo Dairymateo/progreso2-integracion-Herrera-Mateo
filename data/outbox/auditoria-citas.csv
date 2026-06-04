@@ -1,3 +1,4 @@
 idCita,paciente,correo,especialidad,fechaCita,sede,valor,timestamp
 C-001,Juan Pérez,juan@mail.com,Cardiología,2026-07-15,Norte,150.00,2026-06-03 19:51:49
-x   
+x   C-089,Ana Gómez,ana.gomez@empresa.com,Dermatología,2026-08-05,Sur,85.50,2026-06-03 20:24:49
+C-089,Ana Gómez,ana.gomez@empresa.com,Dermatología,2026-08-05,Sur,85.50,2026-06-03 20:26:49

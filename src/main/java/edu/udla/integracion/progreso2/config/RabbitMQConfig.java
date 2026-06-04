@@ -18,6 +18,16 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public DirectExchange billingExchange() {
+        return ExchangeBuilder.directExchange("billing.exchange").durable(true).build();
+    }
+
+    @Bean
+    public Binding billingBinding(Queue billingQueue, DirectExchange billingExchange) {
+        return BindingBuilder.bind(billingQueue).to(billingExchange).with("billing.routing.key");
+    }
+
+    @Bean
     public Queue notificationsQueue() {
         return QueueBuilder.durable("notifications.queue").build();
     }
