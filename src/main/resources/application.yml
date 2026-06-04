@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: progreso2
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+
+server:
+  port: 8080
+
+camel:
+  springboot:
+    name: progreso2-camel-context
+    main-run-controller: true
+
+app:
+  routes:
+    outbox: data/outbox
+    errors: data/errors
+
+logging:
+  level:
+    edu.udla.integracion: DEBUG
+    org.apache.camel: INFO
+    org.springframework: INFO
