@@ -2,7 +2,6 @@ package edu.udla.integracion.progreso2.controller;
 
 import edu.udla.integracion.progreso2.exception.CitaValidationException;
 import edu.udla.integracion.progreso2.model.CitaRequest;
-import edu.udla.integracion.progreso2.service.CitaValidationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -32,59 +31,25 @@ public class CitaController {
         this.producerTemplate = producerTemplate;
     }
 
-    @Operation(
-        summary = "Registrar una cita médica",
-        description = "Recibe una cita médica, la valida y la envía al flujo de integración " +
-                      "Camel → RabbitMQ (billing.queue, appointments.events, auditoria-citas.csv)"
-    )
+    @Operation(summary = "Registrar una cita médica", description = "Recibe una cita médica, la valida y la envía al flujo de integración "
+            +
+            "Camel → RabbitMQ (billing.queue, appointments.events, auditoria-citas.csv)")
     @ApiResponses({
-        @ApiResponse(
-            responseCode = "202",
-            description = "Cita recibida y en proceso",
-            content = @Content(
-                mediaType = "application/json",
-                examples = @ExampleObject(value = "{\"mensaje\": \"Cita recibida y en proceso\", \"idCita\": \"C-001\"}")
-            )
-        ),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Error de validación — campo obligatorio faltante o valor inválido",
-            content = @Content(
-                mediaType = "application/json",
-                examples = @ExampleObject(value = "{\"error\": \"El campo 'paciente' es obligatorio\"}")
-            )
-        ),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Error interno del servidor",
-            content = @Content(
-                mediaType = "application/json",
-                examples = @ExampleObject(value = "{\"error\": \"Error interno del servidor\"}")
-            )
-        )
+            @ApiResponse(responseCode = "202", description = "Cita recibida y en proceso", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = "{\"mensaje\": \"Cita recibida y en proceso\", \"idCita\": \"C-001\"}"))),
+            @ApiResponse(responseCode = "400", description = "Error de validación — campo obligatorio faltante o valor inválido", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = "{\"error\": \"El campo 'paciente' es obligatorio\"}"))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = "{\"error\": \"Error interno del servidor\"}")))
     })
-    @io.swagger.v3.oas.annotations.parameters.RequestBody(
-        description = "Datos de la cita médica a registrar",
-        required = true,
-        content = @Content(
-            mediaType = "application/json",
-            schema = @Schema(implementation = CitaRequest.class),
-            examples = @ExampleObject(
-                name = "Ejemplo de cita válida",
-                value = """
-                        {
-                          "idCita": "C-001",
-                          "paciente": "Juan Pérez",
-                          "correo": "juan@mail.com",
-                          "especialidad": "Cardiología",
-                          "fechaCita": "2026-07-15",
-                          "sede": "Norte",
-                          "valor": 150.00
-                        }
-                        """
-            )
-        )
-    )
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos de la cita médica a registrar", required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CitaRequest.class), examples = @ExampleObject(name = "Ejemplo de cita válida", value = """
+            {
+              "idCita": "C-001",
+              "paciente": "Juan Pérez",
+              "correo": "juan@mail.com",
+              "especialidad": "Cardiología",
+              "fechaCita": "2026-07-15",
+              "sede": "Norte",
+              "valor": 150.00
+            }
+            """)))
     @PostMapping
     public ResponseEntity<?> crearCita(@RequestBody CitaRequest cita) {
         try {
@@ -94,8 +59,7 @@ public class CitaController {
             return ResponseEntity.status(HttpStatus.ACCEPTED)
                     .body(Map.of(
                             "mensaje", "Cita recibida y en proceso",
-                            "idCita", cita.getIdCita()
-                    ));
+                            "idCita", cita.getIdCita()));
         } catch (org.apache.camel.CamelExecutionException e) {
             // CamelExecutionException wraps the actual exception thrown in the route
             Throwable cause = e.getCause();
@@ -114,23 +78,12 @@ public class CitaController {
         }
     }
 
-    @Operation(
-        summary = "Health check del servicio",
-        description = "Verifica que el servicio de citas esté operativo"
-    )
-    @ApiResponse(
-        responseCode = "200",
-        description = "Servicio activo",
-        content = @Content(
-            mediaType = "application/json",
-            examples = @ExampleObject(value = "{\"status\": \"UP\", \"servicio\": \"Progreso2 - Integración Citas Camel + RabbitMQ\"}")
-        )
-    )
+    @Operation(summary = "Health check del servicio", description = "Verifica que el servicio de citas esté operativo")
+    @ApiResponse(responseCode = "200", description = "Servicio activo", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = "{\"status\": \"UP\", \"servicio\": \"Progreso2 - Integración Citas Camel + RabbitMQ\"}")))
     @GetMapping("/status")
     public ResponseEntity<Map<String, String>> status() {
         return ResponseEntity.ok(Map.of(
                 "status", "UP",
-                "servicio", "Progreso2 - Integración Citas Camel + RabbitMQ"
-        ));
+                "servicio", "Progreso2 - Integración Citas Camel + RabbitMQ"));
     }
 }

@@ -31,7 +31,7 @@ public class CitaIntegrationRoute extends RouteBuilder {
     private String errorsDir;
 
     private static final String EXCHANGE_BILLING = "spring-rabbitmq:billing.exchange?routingKey=billing.routing.key";
-    private static final String EXCHANGE_EVENTS  = "spring-rabbitmq:appointments.events?exchangeType=fanout";
+    private static final String EXCHANGE_EVENTS = "spring-rabbitmq:appointments.events?exchangeType=fanout";
 
     public CitaIntegrationRoute(CitaValidationService citaValidationService, ObjectMapper objectMapper) {
         this.citaValidationService = citaValidationService;
@@ -78,7 +78,7 @@ public class CitaIntegrationRoute extends RouteBuilder {
                 .bean(citaValidationService, "validar")
                 .log("✅ Cita válida, iniciando multicast")
                 .multicast().parallelProcessing()
-                    .to("direct:cita-facturacion", "direct:cita-pub-sub", "direct:cita-archivo")
+                .to("direct:cita-facturacion", "direct:cita-pub-sub", "direct:cita-archivo")
                 .end()
                 .log("🎉 Multicast completado exitosamente");
 
