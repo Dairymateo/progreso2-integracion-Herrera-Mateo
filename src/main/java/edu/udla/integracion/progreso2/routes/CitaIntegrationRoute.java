@@ -69,18 +69,18 @@ public class CitaIntegrationRoute extends RouteBuilder {
                 })
                 .setHeader(Exchange.FILE_NAME, constant("citas-rechazadas.log"))
                 .to("file://" + errorsDir + "?fileExist=Append")
-                .log("⚠️ Cita rechazada registrada en citas-rechazadas.log");
+                .log("Cita rechazada registrada en citas-rechazadas.log");
 
         from("direct:procesarCita")
                 .routeId("ruta-procesar-cita")
-                .log("📩 Cita recibida para procesamiento")
+                .log("Cita recibida para procesamiento")
                 .setProperty("citaOriginal", body())
                 .bean(citaValidationService, "validar")
-                .log("✅ Cita válida, iniciando multicast")
+                .log("Cita válida, iniciando multicast")
                 .multicast().parallelProcessing()
                 .to("direct:cita-facturacion", "direct:cita-pub-sub", "direct:cita-archivo")
                 .end()
-                .log("🎉 Multicast completado exitosamente");
+                .log("Multicast completado exitosamente");
 
         from("direct:cita-facturacion")
                 .routeId("ruta-facturacion")
@@ -98,7 +98,7 @@ public class CitaIntegrationRoute extends RouteBuilder {
                     exchange.getMessage().setBody(objectMapper.writeValueAsString(billing));
                 })
                 .to(EXCHANGE_BILLING)
-                .log("💳 Mensaje enviado a billing.exchange (cola: billing.queue)");
+                .log("Mensaje enviado a billing.exchange (cola: billing.queue)");
 
         from("direct:cita-pub-sub")
                 .routeId("ruta-pub-sub")
@@ -116,7 +116,7 @@ public class CitaIntegrationRoute extends RouteBuilder {
                     exchange.getMessage().setBody(objectMapper.writeValueAsString(evento));
                 })
                 .to(EXCHANGE_EVENTS)
-                .log("📢 Evento CITA_CONFIRMADA publicado en appointments.events");
+                .log("Evento CITA_CONFIRMADA publicado en appointments.events");
 
         from("direct:cita-archivo")
                 .routeId("ruta-archivo-legado")
@@ -135,6 +135,6 @@ public class CitaIntegrationRoute extends RouteBuilder {
                 })
                 .setHeader(Exchange.FILE_NAME, constant("auditoria-citas.csv"))
                 .to("file://" + outboxDir + "?fileExist=Append")
-                .log("📁 Cita agregada a auditoria-citas.csv");
+                .log("Cita agregada a auditoria-citas.csv");
     }
 }

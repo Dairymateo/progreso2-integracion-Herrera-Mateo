@@ -60,7 +60,6 @@ public class CitaController {
                             "mensaje", "Cita recibida y en proceso",
                             "idCita", cita.getIdCita()));
         } catch (org.apache.camel.CamelExecutionException e) {
-            // CamelExecutionException wraps the actual exception thrown in the route
             Throwable cause = e.getCause();
             if (cause instanceof CitaValidationException) {
                 log.warn("[CitaController] Validación fallida en Camel: {}", cause.getMessage());
